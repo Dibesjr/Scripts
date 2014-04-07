@@ -1,10 +1,10 @@
 _G.Update = true
 local UPDATE_SCRIPT_NAME = "Thresh"
 local UPDATE_HOST = "raw.githubusercontent.com"
-local UPDATE_BitBucket_USER = "Dibesjr"
-local UPDATE_BitBucket_FOLDER = "Scripts"
-local UPDATE_BitBucket_FILE = "Thresh.lua"
-local UPDATE_PATH = "/"..UPDATE_BitBucket_USER.."/"..UPDATE_BitBucket_FOLDER.."/master/"..UPDATE_BitBucket_FILE
+local UPDATE_Github_USER = "Dibesjr"
+local UPDATE_Github_FOLDER = "Scripts"
+local UPDATE_Github_FILE = "Thresh.lua"
+local UPDATE_PATH = "/"..UPDATE_Github_USER.."/"..UPDATE_Github_FOLDER.."/master/"..UPDATE_Github_FILE
 local UPDATE_FILE_PATH = SCRIPT_PATH..GetCurrentEnv().FILE_NAME
 local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
 
