@@ -1,6 +1,7 @@
 if myHero.charName ~= "Thresh" then return end
 local version = "0.45"
 local AUTOUPDATE = true
+math.randomseed(os.time())
 
 local REQUIRED_LIBS = {
 		["VPrediction"] = "https://bitbucket.org/honda7/bol/raw/master/Common/VPrediction.lua",
@@ -36,7 +37,7 @@ require "Collision"
 require "SourceLib"
 
 if AUTOUPDATE then
-	 LazyUpdater("Thresh", version, "raw.githubusercontent.com", "/Dibesjr/Scripts/master/Thresh.lua", SCRIPT_PATH .. GetCurrentEnv().FILE_NAME):SetSilent(false):CheckUpdate()
+	 LazyUpdater("Thresh", version, "raw.githubusercontent.com", "/Dibesjr/Scripts/master/Thresh.lua" .. '?rand=' .. tostring(math.random(1,10000)), SCRIPT_PATH .. GetCurrentEnv().FILE_NAME):SetSilent(false):CheckUpdate()
 end
 
 local VP = nil 
