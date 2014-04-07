@@ -1,42 +1,43 @@
-_G.Update = true
-local UPDATE_SCRIPT_NAME = "Thresh"
-local UPDATE_HOST = "raw.githubusercontent.com"
-local UPDATE_Github_USER = "Dibesjr"
-local UPDATE_Github_FOLDER = "Scripts"
-local UPDATE_Github_FILE = "Thresh.lua"
-local UPDATE_PATH = "/"..UPDATE_Github_USER.."/"..UPDATE_Github_FOLDER.."/master/"..UPDATE_Github_FILE
-local UPDATE_FILE_PATH = SCRIPT_PATH..GetCurrentEnv().FILE_NAME
-local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
+if myHero.charName ~= "Thresh" then return end
+local version = "0.45"
+local AUTOUPDATE = true
 
-local ServerData
-if _G.Update then
-	GetAsyncWebResult(UPDATE_HOST, UPDATE_PATH, function(d) ServerData = d end)
-	function update()
-		if ServerData ~= nil then
-			local ServerVersion
-			local send, tmp, sstart = nil, string.find(ServerData, "local version = \"")
-			if sstart then
-				send, tmp = string.find(ServerData, "\"", sstart+1)
-			end
-			if send then
-				ServerVersion = tonumber(string.sub(ServerData, sstart+1, send-1))
-			end
+local REQUIRED_LIBS = {
+		["VPrediction"] = "https://bitbucket.org/honda7/bol/raw/master/Common/VPrediction.lua",
+		["SourceLib"] = "https://bitbucket.org/TheRealSource/public/raw/master/common/SourceLib.lua",
 
-			if ServerVersion ~= nil and tonumber(ServerVersion) ~= nil and tonumber(ServerVersion) > tonumber(version) then
-				DownloadFile(UPDATE_URL.."?nocache"..myHero.charName..os.clock(), UPDATE_FILE_PATH, function () print("<font color=\"#FF0000\"><b>"..UPDATE_SCRIPT_NAME..":</b> successfully updated. ("..version.." => "..ServerVersion..")</font>") end)     
-			elseif ServerVersion then
-				print("<font color=\"#FF0000\"><b>"..UPDATE_SCRIPT_NAME..":</b> You have got the latest version: <u><b>"..ServerVersion.."</b></u></font>")
-			end		
-			ServerData = nil
-		end
+	}
+	
+	local DOWNLOADING_LIBS, DOWNLOAD_COUNT = false, 0
+	local SELF_NAME = GetCurrentEnv() and GetCurrentEnv().FILE_NAME or ""
+
+function AfterDownload()
+	DOWNLOAD_COUNT = DOWNLOAD_COUNT - 1
+	if DOWNLOAD_COUNT == 0 then
+		DOWNLOADING_LIBS = false
+		print("<b>[Velox Thresh]: Required libraries downloaded successfully, please reload (double F9).</b>")
 	end
-	AddTickCallback(update)
 end
 
-if myHero.charName ~= "Thresh" then return end
+for DOWNLOAD_LIB_NAME, DOWNLOAD_LIB_URL in pairs(REQUIRED_LIBS) do
+	if FileExist(LIB_PATH .. DOWNLOAD_LIB_NAME .. ".lua") then
+		require(DOWNLOAD_LIB_NAME)
+	else
+		DOWNLOADING_LIBS = true
+		DOWNLOAD_COUNT = DOWNLOAD_COUNT + 1
+		DownloadFile(DOWNLOAD_LIB_URL, LIB_PATH .. DOWNLOAD_LIB_NAME..".lua", AfterDownload)
+	end
+end
+
+if DOWNLOADING_LIBS then return end
+
 require "VPrediction"
 require "Collision"
+require "SourceLib"
 
+if AUTOUPDATE then
+	 LazyUpdater("Thresh", version, "raw.githubusercontent.com", "/Dibesjr/Scripts/master/Thresh.lua", SCRIPT_PATH .. GetCurrentEnv().FILE_NAME):SetSilent(false):CheckUpdate()
+end
 
 local VP = nil 
 local ts = {}
